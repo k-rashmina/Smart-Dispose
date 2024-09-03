@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const inquiryDetailsSchema = new Schema({
-    inquiryId: {
+    refId: {
         type: String,
         required: true
     },
@@ -10,7 +10,15 @@ const inquiryDetailsSchema = new Schema({
         type: String,
         required: true
     },
+    email:{
+        type: String,
+        required: true
+    },
     category:{
+        type: String,
+        required: true
+    },
+    subject:{
         type: String,
         required: true
     },

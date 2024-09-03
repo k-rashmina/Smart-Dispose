@@ -3,11 +3,13 @@ const { v4: uuidv4 } = require('uuid');
 
 const createInquiry = async (req,res)=>{
 
-    const inquiryId = `INQ-${uuidv4()}`;
+    const refId = `INQ-${uuidv4()}`;
     const inquiryDetails = new InquiryDetails({
-        inquiryId: inquiryId,
+        refId: refId,
         userName: req.body.userName,
+        email: req.body.email,
         category: req.body.category,
+        subject: req.body.subject,
         description: req.body.description,
     });
     try {
