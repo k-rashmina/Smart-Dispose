@@ -9,4 +9,7 @@ const router = express.Router();
 const customerRoutes = require("./customerRoutes");
 router.use("/customer", customerRoutes);
 
+const inquiryRoutes = require("./inquiryRoutes");
+router.use("/inquiry", inquiryRoutes);
+
 module.exports = router;
