@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "sd-frontend",
-    "slug": "sd-frontend",
+    "name": "Smart Dispose",
+    "slug": "smart-dispose",
+    "scheme": "smart-dispose",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
@@ -22,6 +23,9 @@
     },
     "web": {
       "favicon": "./app/assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-router"
+    ]
   }
 }
