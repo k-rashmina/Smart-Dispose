@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const dbConnect = require("./db-config");
 const routes = require("./routes");
+const paymetRoutes = require("./routes/paymentRoutes");
 
 //initialization and middleware
 const app = express();
@@ -11,6 +12,7 @@ const port = process.env.PORT || 5000;
 // app.use(cors(["http://localhost:5173/*"]));
 app.use(express.json({ limit: "15mb" }));
 app.use("/", routes);
+app.use("/payment", paymetRoutes);
 
 //db connection
 
