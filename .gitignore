@@ -62,3 +62,7 @@ TransactionReport.pdf
 *.njsproj
 *.sln
 *.sw?
+
+
+sd-backend/backend_startup.sh
+sd-frontend/frontend_startup.sh
