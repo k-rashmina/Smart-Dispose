@@ -14,7 +14,7 @@ router.post("/intents", async (req, res) => {
       },
     });
 
-    // Return the secret
+    // Return the secret to the client
     res.json({ paymentIntent: paymentIntent.client_secret });
   } catch (e) {
     res.status(500).json({ error: e.message });
