@@ -3,7 +3,11 @@ const { v4: uuidv4 } = require('uuid');
 const nodemailer = require('nodemailer');
 
 const createInquiry = async (req, res) => {
-    const refId = `INQ-${uuidv4()}`;
+  
+
+// Generate a shortened refId with 8 characters
+const refId = `INQ-${uuidv4().replace(/-/g, '').substring(0, 8)}`;
+
     
     const inquiryDetails = new InquiryDetails({
         refId: refId,
