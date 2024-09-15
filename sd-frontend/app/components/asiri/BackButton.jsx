@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     top: 20, // Adjust this value to position it at the top
-    right: 20, // Align to the right
+    left: 20, // Align to the right
     zIndex: 1, // Ensure it's on top of other elements
     backgroundColor: '#4CAF50', // Green background
     padding: 10,

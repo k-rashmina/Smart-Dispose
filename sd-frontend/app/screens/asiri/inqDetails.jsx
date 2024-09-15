@@ -1,49 +1,53 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-import axios from 'axios';
-import { useRoute, useNavigation } from '@react-navigation/native';
-import BackButton from '../../components/asiri/BackButton';
-import InqDelete from './inqDelete';
+import React, { useState } from "react";
+import { View, TextInput, Button, StyleSheet, Text } from "react-native";
+import axios from "axios";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import BackButton from "../../components/asiri/BackButton";
+import InqDelete from "./inqDelete";
 
 const InquiryDetails = () => {
-  const route = useRoute();  // Get passed inquiry data
-  const navigation = useNavigation();  // To navigate back after update
-  const { inquiry } = route.params;  // Get inquiry data from route params
+  const route = useRoute(); // Get passed inquiry data
+  const navigation = useNavigation(); // To navigate back after update
+  const { inquiry } = route.params; // Get inquiry data from route params
 
   // Initialize state with inquiry data
   const [inquiryData, setInquiryData] = useState({
-    userName: inquiry.userName || '',
-    email: inquiry.email || '',
-    category: inquiry.category || '',
-    subject: inquiry.subject || '',
-    description: inquiry.description || '',
+    userName: inquiry.userName || "",
+    email: inquiry.email || "",
+    category: inquiry.category || "",
+    subject: inquiry.subject || "",
+    description: inquiry.description || "",
   });
 
   // Function to handle form submission
   const handleUpdate = () => {
     axios
-    
-      .put(`http://192.168.56.1:5000/inquiry/updateInquiry/${inquiry._id}`, inquiryData)
-      .then(response => {
-        alert('Inquiry updated successfully');
-        navigation.goBack();  // Navigate back after update
+      .put(
+        `http://192.168.56.1:5000/inquiry/updateInquiry/${inquiry._id}`,
+        inquiryData
+      )
+      .then((response) => {
+        alert("Inquiry updated successfully");
+        navigation.goBack(); // Navigate back after update
       })
-      .catch(error => {
-        console.error('Error updating inquiry', error);
-        alert('Failed to update inquiry');
+      .catch((error) => {
+        console.error("Error updating inquiry", error);
+        alert("Failed to update inquiry");
       });
   };
 
   return (
     <View style={styles.container}>
-       <Text style={styles.heading}>Modify your Inquiry</Text>
+      <Text style={styles.heading}>Modify your Inquiry</Text>
       <Text style={styles.label}>User Name</Text>
-       {/* Back Button */}
-       <BackButton />
+      {/* Back Button */}
+      <BackButton />
       <TextInput
         placeholder="Enter User Name"
         value={inquiryData.userName}
-        onChangeText={(text) => setInquiryData({ ...inquiryData, userName: text })}
+        onChangeText={(text) =>
+          setInquiryData({ ...inquiryData, userName: text })
+        }
         style={styles.input}
       />
 
@@ -60,7 +64,9 @@ const InquiryDetails = () => {
       <TextInput
         placeholder="Enter Category"
         value={inquiryData.category}
-        onChangeText={(text) => setInquiryData({ ...inquiryData, category: text })}
+        onChangeText={(text) =>
+          setInquiryData({ ...inquiryData, category: text })
+        }
         style={styles.input}
       />
 
@@ -68,7 +74,9 @@ const InquiryDetails = () => {
       <TextInput
         placeholder="Enter Subject"
         value={inquiryData.subject}
-        onChangeText={(text) => setInquiryData({ ...inquiryData, subject: text })}
+        onChangeText={(text) =>
+          setInquiryData({ ...inquiryData, subject: text })
+        }
         style={styles.input}
       />
 
@@ -76,14 +84,16 @@ const InquiryDetails = () => {
       <TextInput
         placeholder="Enter Description"
         value={inquiryData.description}
-        onChangeText={(text) => setInquiryData({ ...inquiryData, description: text })}
+        onChangeText={(text) =>
+          setInquiryData({ ...inquiryData, description: text })
+        }
         style={[styles.input, styles.textArea]}
         multiline={true}
         numberOfLines={4}
       />
       <Text></Text>
 
-      <Button title="Update Inquiry" color="#4CAF50"onPress={handleUpdate} />
+      <Button title="Update Inquiry" color="#4CAF50" onPress={handleUpdate} />
       {/* Delete Inquiry */}
       <InqDelete inquiryId={inquiry._id} />
     </View>
@@ -93,24 +103,24 @@ const InquiryDetails = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   heading: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#4CAF50',
-    textAlign: 'center',
+    fontWeight: "bold",
+    color: "#4CAF50",
+    textAlign: "center",
     marginVertical: 10, // Space around the heading
   },
   label: {
     fontSize: 16,
     marginBottom: 8,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   input: {
     height: 40,
-    borderColor: '#4CAF50',
+    borderColor: "#4CAF50",
     borderWidth: 1,
     marginBottom: 15,
     paddingLeft: 10,
@@ -118,16 +128,16 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 100,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     padding: 10,
   },
-  button:{
-    backgroundColor: '#4CAF50',
-    color: 'white',
+  button: {
+    backgroundColor: "#4CAF50",
+    color: "white",
     padding: 10,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 20,
-  }
+  },
 });
 
 export default InquiryDetails;
