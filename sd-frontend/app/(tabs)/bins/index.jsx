@@ -20,8 +20,8 @@ const BinDashboard = () => {
   const [selectedBin, setSelectedBin] = useState("");
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.binsContainer}>
           <TouchableOpacity
             onPress={() =>
@@ -108,8 +108,8 @@ const BinDashboard = () => {
           <Text style={styles.label}>Paybacks</Text>
           <Text style={styles.value}>Rs.10160.40</Text>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 

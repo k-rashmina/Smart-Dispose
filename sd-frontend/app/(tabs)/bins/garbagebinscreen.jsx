@@ -30,10 +30,10 @@ const GarbageBinScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={{ flexGrow: 1, position: "relative" }}
-      >
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1, position: "relative" }}
+    >
+      <SafeAreaView style={styles.container}>
         <BinLevel type={type} level={binData.current_capacity || 0} />
         <Image source={wasteLevel} style={styles.wasteMeter} />
 
@@ -66,8 +66,8 @@ const GarbageBinScreen = () => {
             <Text style={styles.buttonText}>Request Collection</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
