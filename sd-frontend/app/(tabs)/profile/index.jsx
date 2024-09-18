@@ -7,6 +7,7 @@ const Profile = () => {
     <View>
       <Text>Profile</Text>
       <Link style={{marginTop: 50, alignSelf: 'center', color: 'blue', fontSize: 20}} href={'/profile/inqlist'}>Inquiries</Link>
+      <Link style={{marginTop: 50, alignSelf: 'center', color: 'blue', fontSize: 20}} href={'/profile/userDetails'}>UserDetails</Link>
     </View>
   )
 }
