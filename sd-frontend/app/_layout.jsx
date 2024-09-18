@@ -1,16 +1,18 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import { Slot } from 'expo-router'
+import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { Slot, Stack } from "expo-router";
+import { Header } from "react-native/Libraries/NewAppScreen";
 
 const RootLayout = () => {
   return (
-    <>
-      <Text>header</Text>
-      <Slot/>
-    </>
-  )
-}
+    <Stack>
+      <Stack.Screen name="index" options={{headerShown: false}} />
+      <Stack.Screen name="(auth)" options={{headerShown: false}} />
+      <Stack.Screen name="(tabs)" options={{headerShown: false}} />
+    </Stack>
+  );
+};
 
-export default RootLayout
+export default RootLayout;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});
