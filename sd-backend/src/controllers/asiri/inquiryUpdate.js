@@ -1,5 +1,4 @@
 const inquiryDetails = require("../../models/asiri/inquiryDetails");
-
 const updateInquiry = async (req, res) => {
   const objectid = req.params.id;
 
