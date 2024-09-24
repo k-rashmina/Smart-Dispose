@@ -39,7 +39,7 @@ const inqlist = () => {
   const renderCard = ({ item }) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("screens/asiri/inqDetails", { inquiry: item })
+        navigation.navigate("(tabs)/profile/inqDetails", { inquiry: item })
       }
     >
       <Card style={styles.card}>
@@ -81,7 +81,7 @@ const inqlist = () => {
           <Text style={styles.modalText}>
             Do you need to Contact Us?
           </Text>
-          <Link href="screens/asiri/inqCreate" onPress={toggleModal}>
+          <Link href="(tabs)/profile/inqCreate" onPress={toggleModal}>
             <Text style={[styles.linkText,{color:"#4CAF50"}]}>Yes, Create Inquiry</Text>
           </Link>
           <TouchableOpacity onPress={toggleModal}>
