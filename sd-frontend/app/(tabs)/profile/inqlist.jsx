@@ -62,8 +62,8 @@ const inqlist = () => {
 
   return (
     <View style={styles.container}>
-      <BackButton />
-      <Text style={styles.heading}>History</Text>
+      {/* <BackButton /> */}
+      {/* <Text style={styles.heading}>History</Text> */}
       <FlatList
         data={inquiries}
         renderItem={renderCard}
@@ -72,7 +72,7 @@ const inqlist = () => {
 
       {/* Floating Icon Button */}
       <TouchableOpacity style={styles.iconButton} onPress={toggleModal}>
-        <Icon name="add-circle" size={60} color="#4CAF50" />
+        <Icon name="add-circle" size={60} color="#00b400" />
       </TouchableOpacity>
 
       {/* Popup Modal */}
