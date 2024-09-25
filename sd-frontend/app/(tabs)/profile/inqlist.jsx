@@ -39,7 +39,7 @@ const inqlist = () => {
   const renderCard = ({ item }) => (
     <TouchableOpacity
       onPress={() =>
-        navigation.navigate("(tabs)/profile/inqDetails", { inquiry: item })
+        navigation.navigate("inqDetails", { inquiry: item })
       }
     >
       <Card style={styles.card}>
