@@ -90,8 +90,8 @@ const inqCreate = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <BackButton />
-      <Text style={styles.heading}>Contact Us</Text>
+      {/* <BackButton />
+      <Text style={styles.heading}>Contact Us</Text> */}
       
       <Text style={styles.label}>User Name</Text>
       <TextInput

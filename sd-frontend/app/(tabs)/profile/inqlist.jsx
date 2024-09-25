@@ -38,9 +38,10 @@ const inqlist = () => {
 
   const renderCard = ({ item }) => (
     <TouchableOpacity
-      onPress={() =>
-        navigation.navigate("inqDetails", { inquiry: item })
-      }
+      onPress={() => {
+        navigation.navigate("inqDetails", { inquiry: item });
+        // console.log(item);
+      }}
     >
       <Card style={styles.card}>
         <Card.Content>
@@ -78,11 +79,11 @@ const inqlist = () => {
       {/* Popup Modal */}
       <Modal isVisible={isModalVisible}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalText}>
-            Do you need to Contact Us?
-          </Text>
+          <Text style={styles.modalText}>Do you need to Contact Us?</Text>
           <Link href="(tabs)/profile/inqCreate" onPress={toggleModal}>
-            <Text style={[styles.linkText,{color:"#4CAF50"}]}>Yes, Create Inquiry</Text>
+            <Text style={[styles.linkText, { color: "#4CAF50" }]}>
+              Yes, Create Inquiry
+            </Text>
           </Link>
           <TouchableOpacity onPress={toggleModal}>
             <Text style={[styles.linkText, { color: "red" }]}>Cancel</Text>
