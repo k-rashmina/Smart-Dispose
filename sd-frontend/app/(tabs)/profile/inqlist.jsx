@@ -14,23 +14,25 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
 import BackButton from "../../components/asiri/BackButton";
-// import renderCard from "../../components/asiri/Card";
+
 
 const inqlist = () => {
-  const [inquiries, setInquiries] = useState([]);
+  const [inquiries, setInquiries] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
     axios
+      // .get("http://192.168.56.1:5000/inquiry/getOneInquiry/66dbff15fe7452c165f0dc23")
       .get("http://192.168.56.1:5000/inquiry/getInquiry/")
       .then((response) => {
+        // setInquiries([response.data]);
         setInquiries(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  });
+},[]);
   // Toggle modal visibility
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
