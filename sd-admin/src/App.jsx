@@ -1,34 +1,35 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {BrowserRouter, Routes, Route, Link} from 'react-router-dom';
+import AdminLayout from './components/common/AdminLayout';
+import AdminPanel from './components/common/AdminPanel';
+import InquiryReport from './components/inquiryReport'
+import ProfileReport from './components/profileReport';
+import BinDashboard from './components/binDashboard';
+import Collectors from './components/collectors';
 
 function App() {
-  const [count, setCount] = useState(0)
+
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <BrowserRouter>
+    <Routes>
+    <Route path='/admin' element={<AdminPanel/>}/>
+      <Route element={<AdminLayout page={'Inquiry'} menu={["Report"]}></AdminLayout>}>
+        <Route path="admin/inquiry/report" element={<InquiryReport/>}/>
+      </Route>
+
+      <Route element={<AdminLayout page={'Bin'} menu={["Dashboard","Collectors"]}></AdminLayout>}>
+        <Route path="admin/bin/dashboard" element={<BinDashboard/>}/>
+        <Route path="admin/bin/collectors" element={<Collectors/>}/>
+      </Route>
+
+      <Route element={<AdminLayout page={'Profile'} menu={["Report"]}></AdminLayout>}>
+        <Route path="admin/profile/report" element={<ProfileReport/>}/>
+        
+      </Route>
+      </Routes>
+    </BrowserRouter>
+   
   )
 }
 
