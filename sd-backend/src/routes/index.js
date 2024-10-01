@@ -4,6 +4,7 @@ const path = require("path");
 const customerRoutes = require("./customerRoutes");
 const inquiryRoutes = require("./inquiryRoutes");
 const binRoutes = require("./binRoutes");
+const paymentRoutes = require("./paymentRoutes");
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ router.use('/assets', express.static(path.join(__dirname, '../../../sd-admin','s
 router.use("/customer", customerRoutes); //customer routes
 router.use("/inquiry", inquiryRoutes); //inquiry routes
 router.use("/bin", binRoutes);
+router.use("/payments", paymentRoutes);
 
 router.get("/test", (req, res) => {
   res.status(200).json({
