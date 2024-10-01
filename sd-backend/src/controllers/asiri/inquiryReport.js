@@ -1,5 +1,6 @@
 const inquiryDetails = require("../../models/asiri/inquiryDetails");
 const puppeteer = require("puppeteer");
+const path = require('path');
 
 // Function to generate the PDF report
 const inquiryReport = async (req, res) => {
@@ -10,6 +11,8 @@ const inquiryReport = async (req, res) => {
         // Launching the browser
         const browser = await puppeteer.launch();
         const page = await browser.newPage();
+
+        const filePath = path.resolve(__dirname, '../../../', 'inquiryReport.pdf');
 
         // Setting the content of the PDF with the updated logo and heading format
         await page.setContent(`
@@ -70,7 +73,7 @@ const inquiryReport = async (req, res) => {
                 </head>
                 <body>
                     <div class="header">
-                        <img src="http://localhost:5000/assets/react.svg" alt="Company Logo" />
+                        <img src="http://localhost:5000/assets/logo.png" alt="Company Logo" />
                         <b>Smart-Dispose Pvt. Ltd.</b>
                     </div>
                     <div class="company-details">
@@ -80,7 +83,7 @@ const inquiryReport = async (req, res) => {
                         <b>Telephone: +94 11 2345678</b>
                     </div>
                     <hr />
-                    <h1 style="text-align: center; color: #4CAF50;">Smart-Dispose Inquiry Report</h1>
+                    <h1 style="text-align: center; color: #4CAF50;">Inquiry Report</h1>
                     <table>
                         <tr>
                             <th>Ref ID</th>
@@ -89,7 +92,7 @@ const inquiryReport = async (req, res) => {
                             <th>Category</th>
                             <th>Subject</th>
                             <th>Description</th>
-                            <th>Creation Date</th>
+                            <th>Submit Date</th>
                         </tr>
                         ${inquiry.map(inquiry => `
                             <tr>
@@ -112,7 +115,7 @@ const inquiryReport = async (req, res) => {
 
         // Generating the PDF
         await page.pdf({
-            path: 'inquiryReport.pdf',
+            path: filePath,
             format: 'A4',
             margin: {
                 top: "1cm",
@@ -123,11 +126,16 @@ const inquiryReport = async (req, res) => {
         });
 
         await browser.close();
-
-        res.status(200).send('PDF Generated');
+        res.sendFile(filePath);
+        
     } catch (error) {
         res.status(500).send('Error generating PDF');
     }
 }
 
 module.exports = inquiryReport;
+
+
+
+
+
