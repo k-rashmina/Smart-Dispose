@@ -1,25 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet,BackHandler, Alert } from 'react-native';
-import { Link, router, useRouter,  } from 'expo-router';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebaseConfig';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  BackHandler,
+  Alert,
+} from "react-native";
+import { Link, useRouter } from "expo-router";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
 import { useFocusEffect } from "@react-navigation/native";
 
-
-
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errors, setErrors] = useState({ email: '', password: '' });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const [router, setRouter] = useState(useRouter());
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        router.push('/home');
+        router.push("/home");
 
-        console.log('Logged in as:', userCredential.user.email);})
-      .catch((error) => { console.error('Error signing in:', error.message); });
+        console.log("Logged in as:", userCredential.user.email);
+      })
+      .catch((error) => {
+        console.error("Error signing in:", error.message);
+      });
   };
 
   // Handle back button press specifically for the login screen
@@ -45,27 +54,35 @@ const Login = () => {
 
       // Cleanup the event listener when leaving the login screen
       return () => backHandler.remove();
-    }, [])
-  );
-
+    }, [])
+  );
 
   // Validate email in real-time as user types
   useEffect(() => {
     if (!email) {
-      setErrors((prevErrors) => ({ ...prevErrors, email: 'Email is required.' }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "Email is required.",
+      }));
     } else if (!validateEmail(email)) {
-      setErrors((prevErrors) => ({ ...prevErrors, email: 'Please enter a valid email address.' }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        email: "Please enter a valid email address.",
+      }));
     } else {
-      setErrors((prevErrors) => ({ ...prevErrors, email: '' }));
+      setErrors((prevErrors) => ({ ...prevErrors, email: "" }));
     }
   }, [email]);
 
   // Validate password in real-time as user types
   useEffect(() => {
     if (!password) {
-      setErrors((prevErrors) => ({ ...prevErrors, password: 'Password is required.' }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        password: "Password is required.",
+      }));
     } else {
-      setErrors((prevErrors) => ({ ...prevErrors, password: '' }));
+      setErrors((prevErrors) => ({ ...prevErrors, password: "" }));
     }
   }, [password]);
 
@@ -75,18 +92,16 @@ const Login = () => {
     return regex.test(email);
   };
 
-
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>LOG IN TO YOUR ACCOUNT</Text>
-      
+
       {/* Email Field with Label */}
       <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
-        placeholder='ex: jon.smith@email.com'
-        keyboardType='email-address'
+        placeholder="ex: jon.smith@email.com"
+        keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
       />
@@ -96,19 +111,25 @@ const Login = () => {
       <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
-        placeholder='**********'
+        placeholder="**********"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
       />
-      {errors.password ? <Text style={styles.error}>{errors.password}</Text> : null}
+      {errors.password ? (
+        <Text style={styles.error}>{errors.password}</Text>
+      ) : null}
 
-      <TouchableOpacity onPress={handleLogin} style={styles.button} disabled={!!errors.email || !!errors.password}>
+      <TouchableOpacity
+        onPress={handleLogin}
+        style={styles.button}
+        disabled={!!errors.email || !!errors.password}
+      >
         <Text style={styles.buttonText}>LOG IN</Text>
       </TouchableOpacity>
 
-      <Link href={'/register'} style={{ textAlign: 'center' }}>
-        Don't have an account? <Text style={{ color: 'blue' }}>SIGN UP</Text>
+      <Link href={"/register"} style={{ textAlign: "center" }}>
+        Don't have an account? <Text style={{ color: "blue" }}>SIGN UP</Text>
       </Link>
     </View>
   );
@@ -117,43 +138,43 @@ const Login = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
   input: {
     height: 50,
-    borderColor: '#4CAF50',
+    borderColor: "#4CAF50",
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 15,
     paddingHorizontal: 10,
   },
   button: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     padding: 15,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   error: {
-    color: 'red',
+    color: "red",
     marginBottom: 10,
   },
 });
