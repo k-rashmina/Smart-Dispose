@@ -13,9 +13,9 @@ const cusDeleteCon = require('../controllers/chamath/cusDelete');
 
 
 router.post('/cusCreate', cusCreateCon);
-router.put('/cusUpdate/:id', cusUpdateCon);
-router.get('/cusRead/:id', cusReadCon);
-router.delete('/cusDelete/:id', cusDeleteCon);
+router.put('/cusUpdate/:email', cusUpdateCon);
+router.get('/cusRead/:email', cusReadCon);
+router.delete('/cusDelete/:email', cusDeleteCon);
 
 
 
