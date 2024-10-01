@@ -6,6 +6,9 @@ const ProfileLayout = () => {
   return (
     <Stack>
       <Stack.Screen name='index' options={{headerShown: true, title: 'Profile', headerTitleAlign: 'center'}} />
+      <Stack.Screen name= 'inqlist' options={{headerShown:true,title:'History',headerTitleAlign:'center', headerTintColor:'#00b400'}}/>
+      <Stack.Screen name='inqDetails' options={{headerShown:true,title:'Inquiry Details',headerTitleAlign:'center',headerTintColor:'#00b400'}}/>
+      <Stack.Screen name='inqCreate' options={{headerShown:true,title:'Contact Us',headerTitleAlign:'center',headerTintColor:'#00b400'}}/>
     </Stack>
   )
 }
