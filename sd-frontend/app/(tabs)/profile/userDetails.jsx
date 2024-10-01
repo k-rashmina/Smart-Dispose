@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Dimensions, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView, View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Dimensions, ScrollView, KeyboardAvoidingView, Platform, Modal } from 'react-native';
 import axios from 'axios';
-import {Link} from 'expo-router';
+import { Link, Redirect, useRouter } from 'expo-router';
+import { auth } from '../../../firebaseConfig';
+
+
+
+
+
 
 const UserDetails = ({ route, navigation }) => {
   const [user, setUser] = useState({
@@ -16,11 +22,18 @@ const UserDetails = ({ route, navigation }) => {
   const [originalUser, setOriginalUser] = useState(null);  // To keep track of original data
   const [isEditing, setIsEditing] = useState(false);       // To toggle between view and edit mode
   const [loading, setLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false); // To control the delete confirmation popup
+  const router = useRouter();
+
+  const email = auth.currentUser.email;
+
+
+
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`http://192.168.56.1:5000/customer/cusRead/66dbe2066ffc9e99ed1a62ef`);
+        const response = await axios.get(`http://192.168.56.1:5000/customer/cusRead/${email}`);
         setUser(response.data);
         setOriginalUser(response.data); // Save the original data
       } catch (error) {
@@ -34,10 +47,12 @@ const UserDetails = ({ route, navigation }) => {
     fetchUserDetails();
   }, []);
 
-  // Function to save changes
+
   const handleSaveChanges = async () => {
     try {
-      const response = await axios.put(`http://192.168.56.1:5000/customer/cusUpdate/66dbe2066ffc9e99ed1a62ef`, user);
+      // Use user's email instead of _id for the request
+      const response = await axios.put(`http://192.168.56.1:5000/customer/cusUpdate/${email}`, user);
+      
       Alert.alert('Success', 'User details updated successfully.');
       setIsEditing(false);  // Exit editing mode
       setOriginalUser(user); // Save the updated data as the original state
@@ -45,13 +60,34 @@ const UserDetails = ({ route, navigation }) => {
       console.error('Error updating user details:', error);
       Alert.alert('Error', 'Failed to update user details.');
     }
-  };
+};
+
 
   // Function to cancel editing
   const handleCancel = () => {
     setUser(originalUser);  // Revert to original user data
     setIsEditing(false);    // Exit editing mode
   };
+
+  // Function to delete profile
+  const handleDeleteProfile = async () => {
+    try {
+    
+  
+      
+      await axios.delete(`http://192.168.56.1:5000/customer/cusDelete/${email}`);
+  
+      // Show success alert and redirect to login after successful deletion
+      Alert.alert('Success', 'Profile deleted successfully.', [
+        { text: 'OK', onPress: () => router.push('/login') },
+      ]);
+    } catch (error) {
+      console.error('Error deleting profile:', error);
+      Alert.alert('Error', 'Failed to delete profile.');
+    }
+  };
+  
+  
 
   if (loading) {
     return <Text>Loading...</Text>;
@@ -77,46 +113,47 @@ const UserDetails = ({ route, navigation }) => {
 
         {/* Displaying user details in TextInput fields */}
         <View style={styles.detailsContainer}>
-          <Text style={styles.label}>First Name</Text>
-          <TextInput
-            style={styles.input}
-            value={user.cusFname}
-            editable={isEditing}
-            onChangeText={(text) => setUser({ ...user, cusFname: text })}
-          />
+  <Text style={styles.label}>First Name</Text>
+  <TextInput
+    style={styles.input}
+    value={user.cusFname}
+    editable={isEditing} // First name is editable
+    onChangeText={(text) => setUser({ ...user, cusFname: text })}
+  />
 
-          <Text style={styles.label}>Last Name</Text>
-          <TextInput
-            style={styles.input}
-            value={user.cusLname}
-            editable={isEditing}
-            onChangeText={(text) => setUser({ ...user, cusLname: text })}
-          />
+  <Text style={styles.label}>Last Name</Text>
+  <TextInput
+    style={styles.input}
+    value={user.cusLname}
+    editable={isEditing} // Last name is editable
+    onChangeText={(text) => setUser({ ...user, cusLname: text })}
+  />
 
-          <Text style={styles.label}>Email Address</Text>
-          <TextInput
-            style={styles.input}
-            value={user.cusMail}
-            editable={isEditing}
-            onChangeText={(text) => setUser({ ...user, cusMail: text })}
-          />
+  <Text style={styles.label}>Email Address</Text>
+  <TextInput
+    style={styles.input}
+    value={user.cusMail}
+    editable={false} // Email is not editable
+    onChangeText={(text) => setUser({ ...user, cusMail: text })}
+  />
 
-          <Text style={styles.label}>Phone Number</Text>
-          <TextInput
-            style={styles.input}
-            value={user.pNum ? user.pNum.toString() : ''}
-            editable={isEditing}
-            onChangeText={(text) => setUser({ ...user, pNum: text })}
-          />
+  <Text style={styles.label}>Phone Number</Text>
+  <TextInput
+    style={styles.input}
+    value={user.pNum ? user.pNum.toString() : ''}
+    editable={isEditing} // Phone number is editable
+    onChangeText={(text) => setUser({ ...user, pNum: text })}
+  />
 
-          <Text style={styles.label}>Address</Text>
-          <TextInput
-            style={styles.input}
-            value={user.cusAddr}
-            editable={isEditing}
-            onChangeText={(text) => setUser({ ...user, cusAddr: text })}
-          />
-        </View>
+  <Text style={styles.label}>Address</Text>
+  <TextInput
+    style={styles.input}
+    value={user.cusAddr}
+    editable={isEditing} // Address is editable
+    onChangeText={(text) => setUser({ ...user, cusAddr: text })}
+  />
+</View>
+
 
         {isEditing ? (
           <View>
@@ -130,12 +167,47 @@ const UserDetails = ({ route, navigation }) => {
             </TouchableOpacity>
           </View>
         ) : (
-          // Edit button when not in editing mode
-          <TouchableOpacity style={styles.button} onPress={() => setIsEditing(true)}>
-            <Text style={styles.buttonText}>Edit Details</Text>
-          </TouchableOpacity>
+          <View>
+            {/* Edit button when not in editing mode */}
+            <TouchableOpacity style={styles.button} onPress={() => setIsEditing(true)}>
+              <Text style={styles.buttonText}>Edit Details</Text>
+            </TouchableOpacity>
+
+            {/* Delete profile button */}
+            <TouchableOpacity
+              style={[styles.button, styles.deleteButton]}
+              onPress={() => setModalVisible(true)}  // Show confirmation modal
+            >
+              <Text style={styles.buttonText}>Delete Profile</Text>
+            </TouchableOpacity>
+          </View>
         )}
-        
+
+        {/* Confirmation Modal for deleting profile */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>Are you sure you want to delete your profile?</Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity style={styles.modalButton} onPress={handleDeleteProfile}>
+                  <Text style={styles.buttonText}>Yes</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setModalVisible(false)}  // Close modal
+                >
+                  <Text style={styles.buttonText}>No</Text>
+                </TouchableOpacity>
+               
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -175,6 +247,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 5,
+    paddingLeft: 15,
   },
   input: {
     fontSize: 18,
@@ -191,6 +264,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 20,
+    marginLeft: 20,
+    marginRight: 20,
   },
   buttonText: {
     color: '#fff',
@@ -199,6 +274,40 @@ const styles = StyleSheet.create({
   },
   cancelButton: {
     backgroundColor: '#f44336', // Red color for Cancel button
+  },
+  deleteButton: {
+    backgroundColor: '#f44336', // Red color for Delete button
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',  // Semi-transparent background
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: 300,
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+  },
+  modalButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 10,
+    borderRadius: 8,
+    width: 100,
+    alignItems: 'center',
   },
 });
 
