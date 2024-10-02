@@ -6,7 +6,7 @@ exports.addPoints = async (req, res) => {
     const customerPoints = await pointsService.addPoints(email, points);
     res.status(200).json(customerPoints);
   } catch (err) {
-    res.status(500).json({ error: "Unable to add points" });
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -20,7 +20,7 @@ exports.getPointsByEmail = async (req, res) => {
     }
     res.status(200).json(customerPoints);
   } catch (err) {
-    res.status(500).json({ error: "Unable to get points" });
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -32,7 +32,7 @@ exports.updatePointsByEmial = async (req, res) => {
       points
     );
     if (!customerPoints) {
-      res.status(404).json({ error: "Customer not found" });
+      res.status(404).json({ error: err.message });
     }
     res.status(200).json(customerPoints);
   } catch (err) {
