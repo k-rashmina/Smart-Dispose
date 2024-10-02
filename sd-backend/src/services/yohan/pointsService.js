@@ -6,8 +6,7 @@ class PointsService {
     try {
       return await pointsDataAccess.addPoints(email, points);
     } catch (err) {
-      console.error("Error adding points:", err.message);
-      throw new Error("Unable to add points");
+      throw new Error(`Unable to add points to ${email}: ${err.message}`);
     }
   }
 
@@ -16,8 +15,7 @@ class PointsService {
     try {
       return await pointsDataAccess.getPointsByEmail(email);
     } catch (err) {
-      console.error("Error fetching points:", err.message);
-      throw new Error("Unable to fetch customer points");
+      throw new Error(`Unable to get points of ${email}: ${err.message}`);
     }
   }
 
@@ -26,8 +24,7 @@ class PointsService {
     try {
       return await pointsDataAccess.updatePointsByEmail(email, points);
     } catch (err) {
-      console.error("Error updating points:", err.message);
-      throw new Error("Unable to update customer points");
+      throw new Error(`Unable to update points of ${email}: ${err.message}`);
     }
   }
 }
