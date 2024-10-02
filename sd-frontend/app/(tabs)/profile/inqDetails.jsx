@@ -31,7 +31,7 @@ const InquiryDetails = () => {
   const handleUpdate = () => {
     axios
       .put(
-        `http://192.168.56.1:5000/inquiry/updateInquiry/${inquiry._id}`,
+        `http://192.168.1.100:5000/inquiry/updateInquiry/${inquiry._id}`,
         inquiryData
       )
       .then((response) => {

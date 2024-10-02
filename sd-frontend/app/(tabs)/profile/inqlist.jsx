@@ -178,7 +178,7 @@ const inqlist = () => {
   // Function to fetch inquiries
   const fetchInquiries = () => {
     axios
-      .get(`http://192.168.56.1:5000/inquiry/getAllInquiry/${email}`)
+      .get(`http://192.168.1.100:5000/inquiry/getAllInquiry/${email}`)
       .then((response) => {
         setInquiries(response.data);
       })

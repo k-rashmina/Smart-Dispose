@@ -13,7 +13,7 @@ const UsernameDisplay = () => {
       try {
         // Fetch user details from the API using the email
         const response = await axios.get(
-          `http://192.168.56.1:5000/customer/cusRead/${email}`
+          `http://192.168.1.100:5000/customer/cusRead/${email}`
         );
         const { cusFname, cusLname } = response.data;
 
@@ -27,7 +27,7 @@ const UsernameDisplay = () => {
 
     fetchUserDetails(); // Call the function to fetch user details
   }, [email]);
-  console.log(username);
+  
   return username; // Return the concatenated username
 };
 

@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 
 // Base URL for API
-const BASE_URL = 'http://192.168.56.1:5000';
+const BASE_URL = 'http://192.168.1.100:5000';
 
 // Delete Inquiry Component
 const InqDelete = ({ inquiryId }) => {
