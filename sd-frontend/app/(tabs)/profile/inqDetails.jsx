@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, Text ,ScrollView} from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Text,
+  ScrollView,
+} from "react-native";
+import { Picker } from '@react-native-picker/picker';
 import axios from "axios";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import BackButton from "../../components/asiri/BackButton";
@@ -48,7 +56,7 @@ const InquiryDetails = () => {
         onChangeText={(text) =>
           setInquiryData({ ...inquiryData, userName: text })
         }
-        editable = {false}
+        editable={false}
         style={styles.input}
       />
 
@@ -57,12 +65,12 @@ const InquiryDetails = () => {
         placeholder="Enter Email"
         value={inquiryData.email}
         onChangeText={(text) => setInquiryData({ ...inquiryData, email: text })}
-        editable = {false}
+        editable={false}
         style={styles.input}
         keyboardType="email-address"
       />
 
-      <Text style={styles.label}>Category</Text>
+      {/* <Text style={styles.label}>Category</Text>
       <TextInput
         placeholder="Enter Category"
         value={inquiryData.category}
@@ -70,7 +78,23 @@ const InquiryDetails = () => {
           setInquiryData({ ...inquiryData, category: text })
         }
         style={styles.input}
-      />
+      /> */}
+      <Text style={styles.label}>Category</Text>
+      <View style={styles.dropdown}>
+        <Picker
+          selectedValue={inquiryData.category} // Use inquiryData.category for selected value
+          onValueChange={(itemValue) => {
+            setInquiryData({ ...inquiryData, category: itemValue }); // Update inquiryData with selected category
+          }}
+        >
+          <Picker.Item label="Select Category" value="" />
+          <Picker.Item label="Payment Issue" value="Payment Issue" />
+          <Picker.Item label="Service Issue" value="Service Issue" />
+          <Picker.Item label="Technical Issue" value="Technical Issue" />
+          <Picker.Item label="Login Issue" value="Login Issue" />
+          <Picker.Item label="Other" value="Other" />
+        </Picker>
+      </View>
 
       <Text style={styles.label}>Subject</Text>
       <TextInput
@@ -93,12 +117,10 @@ const InquiryDetails = () => {
         multiline={true}
         numberOfLines={4}
       />
-     
 
       <Button title="Update Inquiry" color="#4CAF50" onPress={handleUpdate} />
       {/* Delete Inquiry */}
       <InqDelete inquiryId={inquiry._id} />
-    
     </ScrollView>
   );
 };
@@ -133,6 +155,13 @@ const styles = StyleSheet.create({
     height: 100,
     textAlignVertical: "top",
     padding: 10,
+  },
+  dropdown: {
+    
+    borderWidth: 1,
+    borderColor: '#4CAF50', // Green theme
+    borderRadius: 8,
+    marginBottom: 20,
   },
   button: {
     backgroundColor: "#4CAF50",
