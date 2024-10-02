@@ -10,7 +10,10 @@ const pointsRoutes = require("./pointsRoutes");
 const router = express.Router();
 
 // Define a route to serve static files (like images)
-router.use('/assets', express.static(path.join(__dirname, '../../../sd-admin','src', 'assets')));
+router.use(
+  "/assets",
+  express.static(path.join(__dirname, "../../../sd-admin", "src", "assets"))
+);
 
 router.use("/customer", customerRoutes); //customer routes
 router.use("/inquiry", inquiryRoutes); //inquiry routes
