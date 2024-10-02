@@ -1,15 +1,15 @@
-
-
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, Text, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import BackButton from '../../components/asiri/BackButton';
+import {auth} from '../../../firebaseConfig'
+import UsernameDisplay from '../../utils/asiri/usernameDisplay';
 
 const inqCreate = () => {
-  const [userName, setUserName] = useState('');
-  const [email, setEmail] = useState('');
+  const userName =  UsernameDisplay();
+  const email = auth.currentUser.email;
   const [category, setCategory] = useState('');
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');
@@ -18,22 +18,7 @@ const inqCreate = () => {
 
   const navigation = useNavigation();
 
-  const validateUserName = (name) => {
-    if (!name) {
-      return 'User Name is required';
-    }
-    return '';
-  };
 
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      return 'Email is required';
-    } else if (!emailRegex.test(email)) {
-      return 'Invalid email format';
-    }
-    return '';
-  };
 
   const validateCategory = (category) => {
     if (!category) {
@@ -57,16 +42,12 @@ const inqCreate = () => {
   };
 
   const handleSubmit = () => {
-    const userNameError = validateUserName(userName);
-    const emailError = validateEmail(email);
     const categoryError = validateCategory(category);
     const subjectError = validateSubject(subject);
     const descriptionError = validateDescription(description);
 
-    if (userNameError || emailError || categoryError || subjectError || descriptionError) {
+    if ( categoryError || subjectError || descriptionError) {
       setErrors({
-        userName: userNameError,
-        email: emailError,
         category: categoryError,
         subject: subjectError,
         description: descriptionError,
@@ -97,23 +78,14 @@ const inqCreate = () => {
       <TextInput
         style={styles.input}
         value={userName}
-        onChangeText={(text) => {
-          setUserName(text);
-          setErrors((prev) => ({ ...prev, userName: validateUserName(text) }));
-        }}
-        placeholder="Enter your name"
+        editable = {false}
       />
-      {errors.userName ? <Text style={styles.errorText}>{errors.userName}</Text> : null}
 
       <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
         value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-          setErrors((prev) => ({ ...prev, email: validateEmail(text) }));
-        }}
-        placeholder="Enter your email"
+        editable = {false}
         keyboardType="email-address"
       />
       {errors.email ? <Text style={styles.errorText}>{errors.email}</Text> : null}

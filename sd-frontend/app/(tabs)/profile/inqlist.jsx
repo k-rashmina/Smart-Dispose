@@ -166,20 +166,20 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
-
+import {auth} from '../../../firebaseConfig'
 
 const inqlist = () => {
   const [inquiries, setInquiries] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 
+  const email = auth.currentUser.email;
+
   // Function to fetch inquiries
   const fetchInquiries = () => {
     axios
-      .get("http://192.168.56.1:5000/inquiry/getInquiry/")
-      // .get("http://192.168.56.1:5000/inquiry/getOneInquiry/66f2e66660757c92b05a26af")
+      .get(`http://192.168.56.1:5000/inquiry/getAllInquiry/${email}`)
       .then((response) => {
-        // setInquiries([response.data]);
         setInquiries(response.data);
       })
       .catch((error) => {

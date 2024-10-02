@@ -48,6 +48,7 @@ const InquiryDetails = () => {
         onChangeText={(text) =>
           setInquiryData({ ...inquiryData, userName: text })
         }
+        editable = {false}
         style={styles.input}
       />
 
@@ -56,6 +57,7 @@ const InquiryDetails = () => {
         placeholder="Enter Email"
         value={inquiryData.email}
         onChangeText={(text) => setInquiryData({ ...inquiryData, email: text })}
+        editable = {false}
         style={styles.input}
         keyboardType="email-address"
       />
