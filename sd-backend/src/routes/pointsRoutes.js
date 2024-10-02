@@ -1,15 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const pointsController = require("../controllers/yohan/pointsController");
+const pointsController = require("../controllers/yohan/pointsController.js");
 
+//Create customer points
 router.post("/", pointsController.addPoints);
 
-router.get("/", pointsController.getPoints);
-
+//Get customer points by email
 router.get("/:email", pointsController.getPointsByEmail);
 
-router.put("/:email", pointsController.updatePoints);
-
-router.delete("/:email", pointsController.deletePoints);
+//Update customer points by email
+router.put("/:email", pointsController.updatePointsByEmial);
 
 module.exports = router;
