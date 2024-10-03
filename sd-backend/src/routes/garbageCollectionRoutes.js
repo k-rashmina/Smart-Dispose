@@ -5,7 +5,7 @@ const GarbageCollectionController = require("../controllers/yohan/garbageCollect
 // Create a new garbage collection record
 router.post("/", GarbageCollectionController.createGarbageCollection);
 
-// Get garbage collection records by email
+// Get garbage collection records by email or email with date range
 router.get(
   "/:email",
   GarbageCollectionController.getGarbageCollectionRecordsByEmail
