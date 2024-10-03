@@ -12,6 +12,7 @@ import axios from "axios";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import BackButton from "../../components/asiri/BackButton";
 import InqDelete from "./inqDelete";
+import { ip } from "../../../ipAddress";
 
 const InquiryDetails = () => {
   const route = useRoute(); // Get passed inquiry data
@@ -31,7 +32,7 @@ const InquiryDetails = () => {
   const handleUpdate = () => {
     axios
       .put(
-        `http://192.168.1.100:5000/inquiry/updateInquiry/${inquiry._id}`,
+        `http://${ip}:5000/inquiry/updateInquiry/${inquiry._id}`,
         inquiryData
       )
       .then((response) => {

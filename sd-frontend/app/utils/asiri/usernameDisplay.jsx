@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { auth } from "../../../firebaseConfig"; // Adjust the path to your Firebase config
+import { ip } from "../../../ipAddress";
 
 const UsernameDisplay = () => {
   const [username, setUsername] = useState("");
@@ -13,7 +14,7 @@ const UsernameDisplay = () => {
       try {
         // Fetch user details from the API using the email
         const response = await axios.get(
-          `http://192.168.1.100:5000/customer/cusRead/${email}`
+          `http://${ip}:5000/customer/cusRead/${email}`
         );
         const { cusFname, cusLname } = response.data;
 

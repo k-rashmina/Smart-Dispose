@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import BackButton from '../../components/asiri/BackButton';
 import {auth} from '../../../firebaseConfig'
 import UsernameDisplay from '../../utils/asiri/usernameDisplay';
+import { ip } from '../../../ipAddress';
 
 const inqCreate = () => {
   const userName =  UsernameDisplay();
@@ -55,7 +56,7 @@ const inqCreate = () => {
       return;
     }
 
-    axios.post('http://192.168.1.100:5000/inquiry/createInquiry', {
+    axios.post(`http://${ip}:5000/inquiry/createInquiry`, {
       userName,
       email,
       category,

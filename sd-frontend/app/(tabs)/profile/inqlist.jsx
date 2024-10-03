@@ -167,6 +167,7 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
 import {auth} from '../../../firebaseConfig'
+import { ip } from "../../../ipAddress";
 
 const inqlist = () => {
   const [inquiries, setInquiries] = useState(null);
@@ -178,7 +179,7 @@ const inqlist = () => {
   // Function to fetch inquiries
   const fetchInquiries = () => {
     axios
-      .get(`http://192.168.1.100:5000/inquiry/getAllInquiry/${email}`)
+      .get(`http://${ip}:5000/inquiry/getAllInquiry/${email}`)
       .then((response) => {
         setInquiries(response.data);
       })
