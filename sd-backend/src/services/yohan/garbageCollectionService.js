@@ -27,6 +27,21 @@ class GarbageCollectionService {
     }
   }
 
+  //function for getting garbage collection records by email and range of dates
+  async getGarbageCollectionByDateRange(email, startDate, endDate) {
+    try {
+      return await garbageCollectionDataAccess.getGarbageCollectionByDateRange(
+        email,
+        startDate,
+        endDate
+      );
+    } catch (err) {
+      throw new Error(
+        `Unable to fetch garbage collection records: ${err.message}`
+      );
+    }
+  }
+
   //function for getting all garbage collection records
   async getAllGarbageCollectionRecords() {
     try {
