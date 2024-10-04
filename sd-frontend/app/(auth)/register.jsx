@@ -15,6 +15,7 @@ const SignupForm = () => {
   const [address, setAddress] = useState(''); // New address state
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [profilePictureUrl, setProfilePictureUrl] = useState(null);
   const [errors, setErrors] = useState({});
 
   const handleRegister = () => {
@@ -93,6 +94,7 @@ const SignupForm = () => {
     if (!address) newErrors.address = 'Address is required'; // Validate address
     if (!password) newErrors.password = 'Password is required';
     if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+    
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -109,7 +111,8 @@ const SignupForm = () => {
       cusMail: email,
       pNum: phone,
       cusAddr: address, 
-      cusPassword: password
+      cusPassword: password,
+      profilePictureUrl: profilePictureUrl,
     };
 
     try {
