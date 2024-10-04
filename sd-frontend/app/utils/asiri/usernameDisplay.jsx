@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { auth } from "../../../firebaseConfig"; // Adjust the path to your Firebase config
-import { ip } from "../../../ipAddress";
+import ip from "../../../ipAddress";
 
 const UsernameDisplay = () => {
   const [username, setUsername] = useState("");
