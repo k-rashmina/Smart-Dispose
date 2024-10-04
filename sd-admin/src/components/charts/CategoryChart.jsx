@@ -1,4 +1,3 @@
-// src/components/CategoryChart.js
 import React, { useState, useEffect } from 'react';
 import { Chart } from 'react-google-charts';
 import axios from 'axios';
@@ -7,7 +6,7 @@ export default function CategoryChart() {
   const [inquiries, setInquiries] = useState([]);
 
   useEffect(() => {
-    // Fetch inquiry data from the API
+    // Function to fetch inquiry data from the API
     const fetchInquiries = async () => {
       try {
         const response = await axios.get('http://localhost:5000/inquiry/getInquiry');
@@ -17,8 +16,17 @@ export default function CategoryChart() {
       }
     };
 
+    // Initial data fetch
     fetchInquiries();
-  }, []);
+
+    // Set up an interval to fetch data every 5 seconds
+    const interval = setInterval(() => {
+      fetchInquiries(); // Re-fetch inquiry data
+    }, 5000); // Adjust the interval time as needed (5000ms = 5 seconds)
+
+    // Cleanup the interval on component unmount
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to ensure this effect runs only once on mount
 
   // Process data for the category chart
   const getCategoryData = () => {
@@ -31,7 +39,6 @@ export default function CategoryChart() {
 
   return (
     <div className="category-chart">
-      {/* <h2>Inquiries by Category</h2> */}
       <Chart
         chartType="PieChart"
         data={getCategoryData()}
@@ -46,3 +53,9 @@ export default function CategoryChart() {
     </div>
   );
 }
+
+
+
+
+
+

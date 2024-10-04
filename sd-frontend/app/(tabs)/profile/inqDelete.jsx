@@ -3,9 +3,10 @@ import React from 'react';
 import { View, Button, Alert, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import { ip } from '../../../ipAddress';
 
 // Base URL for API
-const BASE_URL = 'http://192.168.56.1:5000';
+const BASE_URL = `http://${ip}:5000`;
 
 // Delete Inquiry Component
 const InqDelete = ({ inquiryId }) => {
