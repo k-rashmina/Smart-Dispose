@@ -4,6 +4,7 @@ import { Link, router, useRouter } from 'expo-router'
 import axios from 'axios'; // Import axios
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
+import  ip  from '../../ipAddress';
 
 
 const SignupForm = () => {
@@ -113,7 +114,7 @@ const SignupForm = () => {
 
     try {
       // Send a POST request to the backend using axios
-      const response = await axios.post('http://192.168.56.1:5000/customer/cusCreate', data);
+      const response = await axios.post(`http://${ip}:5000/customer/cusCreate`, data);
 
       // Handle the response
       if (response.status === 200) {
