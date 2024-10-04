@@ -1,4 +1,3 @@
-// src/components/DateChart.js
 import React, { useState, useEffect } from 'react';
 import { Chart } from 'react-google-charts';
 import axios from 'axios';
@@ -7,7 +6,7 @@ export default function DateChart() {
   const [inquiries, setInquiries] = useState([]);
 
   useEffect(() => {
-    // Fetch inquiry data from the API
+    // Function to fetch inquiry data
     const fetchInquiries = async () => {
       try {
         const response = await axios.get('http://localhost:5000/inquiry/getInquiry');
@@ -17,7 +16,14 @@ export default function DateChart() {
       }
     };
 
+    // Fetch inquiries initially
     fetchInquiries();
+
+    // Set up an interval to fetch the data periodically
+    const interval = setInterval(fetchInquiries, 5000); // Update every 5 seconds
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
   }, []);
 
   // Process data for the date chart
@@ -32,7 +38,6 @@ export default function DateChart() {
 
   return (
     <div className="date-chart">
-      {/* <h2>Inquiries by Date</h2> */}
       <Chart
         chartType="LineChart"
         data={getDateData()}
@@ -49,3 +54,8 @@ export default function DateChart() {
     </div>
   );
 }
+
+
+
+
+
