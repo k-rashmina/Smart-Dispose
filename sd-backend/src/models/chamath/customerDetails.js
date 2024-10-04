@@ -40,6 +40,10 @@ const customerDetailsSchema = new schema({
         
     },
 
+    profilePictureUrl: { 
+        type: String || null,
+    },
+
 });
 
 const customerDetails = mongoose.model(
