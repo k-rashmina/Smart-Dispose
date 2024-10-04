@@ -240,7 +240,7 @@ const inqlist = () => {
 
       {/* Floating Icon Button */}
       <TouchableOpacity style={styles.iconButton} onPress={toggleModal}>
-        <Icon name="add-circle" size={60} color="#00b400" />
+        <Icon name="add-circle" size={60} color="#4CAF50" />
       </TouchableOpacity>
 
       {/* Popup Modal */}
