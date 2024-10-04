@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, Image, TextInput, TouchableOpacity, StyleShee
 import axios from 'axios';
 import { Link, Redirect, useRouter } from 'expo-router';
 import { auth } from '../../../firebaseConfig';
+import ip  from '../../../ipAddress';
 
 
 
@@ -33,7 +34,7 @@ const UserDetails = ({ route, navigation }) => {
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`http://192.168.56.1:5000/customer/cusRead/${email}`);
+        const response = await axios.get(`http://${ip}:5000/customer/cusRead/${email}`);
         setUser(response.data);
         setOriginalUser(response.data); // Save the original data
       } catch (error) {
@@ -51,7 +52,7 @@ const UserDetails = ({ route, navigation }) => {
   const handleSaveChanges = async () => {
     try {
       // Use user's email instead of _id for the request
-      const response = await axios.put(`http://192.168.56.1:5000/customer/cusUpdate/${email}`, user);
+      const response = await axios.put(`http://${ip}:5000/customer/cusUpdate/${email}`, user);
       
       Alert.alert('Success', 'User details updated successfully.');
       setIsEditing(false);  // Exit editing mode
@@ -75,7 +76,7 @@ const UserDetails = ({ route, navigation }) => {
     
   
       
-      await axios.delete(`http://192.168.56.1:5000/customer/cusDelete/${email}`);
+      await axios.delete(`http://${ip}:5000/customer/cusDelete/${email}`);
   
       // Show success alert and redirect to login after successful deletion
       Alert.alert('Success', 'Profile deleted successfully.', [
