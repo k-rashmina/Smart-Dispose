@@ -10,6 +10,7 @@ const cusCreate = async (req, res) => {
     pNum: req.body.pNum,
     cusAddr: req.body.cusAddr,
     cusPassword: req.body.cusPassword,
+    profilePictureUrl: req.body.profilePictureUrl,
   });
 
   try {

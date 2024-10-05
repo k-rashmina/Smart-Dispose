@@ -10,29 +10,35 @@ import React, { useEffect, useRef, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import axios from "axios";
+import { auth } from "../../../firebaseConfig";
+import ip from "../../../ipAddress";
 
 import BinLevel from "../../components/kalindu/BinLevel";
 import wasteLevel from "../../assets/waste-meter.png";
 
 const GarbageBinScreen = () => {
-  const cusID = "66dacce98ee64814f86ae143";
+  const loggedCus = auth.currentUser.email;
 
   const { type } = useLocalSearchParams();
 
   const [binData, setBinData] = useState({});
 
   useEffect(() => {
-    axios
-      .get(`http://10.0.2.2:5000/bin/getcusbindata?cusID=${cusID}&type=${type}`)
-      .then((res) => {
-        setBinData(res.data);
-      });
+    if (loggedCus) {
+      axios
+        .get(
+          `http://${ip}:5000/bin/getcusbindata?cusID=${loggedCus}&type=${type}`
+        )
+        .then((res) => {
+          setBinData(res.data);
+        });
+    } else {
+      console.error("No user logged in");
+    }
   }, []);
 
   return (
-    <ScrollView
-      contentContainerStyle={{ flexGrow: 1, position: "relative" }}
-    >
+    <ScrollView contentContainerStyle={{ flexGrow: 1, position: "relative" }}>
       <SafeAreaView style={styles.container}>
         <BinLevel type={type} level={binData.current_capacity || 0} />
         <Image source={wasteLevel} style={styles.wasteMeter} />
@@ -79,7 +85,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: "#ffffff",
     marginTop: -50,
-    paddingTop: 30
+    paddingTop: 30,
   },
   header: {
     flexDirection: "row",

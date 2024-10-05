@@ -9,6 +9,8 @@ const pointsRoutes = require("./pointsRoutes");
 const garbageCollectionRoutes = require("./garbageCollectionRoutes");
 const monthlyBillRoutes = require("./monthlyBillRoutes");
 const customerDetailsRoutes = require("./customerDetailsRoutes");
+const tripRoutes = require("./tripRoutes");
+
 const router = express.Router();
 
 // Define a route to serve static files (like images)
@@ -25,6 +27,8 @@ router.use("/points", pointsRoutes);
 router.use("/garbageCollection", garbageCollectionRoutes);
 router.use("/monthlyBill", monthlyBillRoutes);
 router.use("/customerDetails", customerDetailsRoutes);
+router.use("/trips", tripRoutes);
+
 
 router.get("/test", (req, res) => {
   res.status(200).json({

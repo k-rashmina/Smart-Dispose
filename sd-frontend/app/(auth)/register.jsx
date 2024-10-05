@@ -1,28 +1,21 @@
-import React, { useState } from "react";
-import {
-  SafeAreaView,
-  ScrollView,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  Dimensions,
-} from "react-native";
-import { Link, router } from "expo-router";
-import axios from "axios";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebaseConfig";
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
+import { Link, router, useRouter } from 'expo-router'
+import axios from 'axios'; // Import axios
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebaseConfig';
+import  ip  from '../../ipAddress';
+
 
 const SignupForm = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState(''); // New address state
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [profilePictureUrl, setProfilePictureUrl] = useState(null);
   const [errors, setErrors] = useState({});
 
   const handleRegister = () => {
@@ -39,78 +32,80 @@ const SignupForm = () => {
 
   const validateEmail = (email) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
+    const hasUppercase = /[A-Z]/.test(email); // Check for uppercase letters
+    return emailPattern.test(email) && !hasUppercase; // Valid if matches pattern and has no uppercase
   };
-
+  
   const validatePhone = (phone) => {
     const phonePattern = /^[0-9]{10}$/; // Assumes phone number should be 10 digits
     return phonePattern.test(phone);
   };
-
+  
   const validateField = (field, value) => {
     const newErrors = { ...errors };
-
+  
     // Validation logic for each field
     if (field === "firstName") {
       if (!value) newErrors.firstName = "First name is required";
       else delete newErrors.firstName;
     }
 
-    if (field === "lastName") {
-      if (!value) newErrors.lastName = "Last name is required";
+  
+    if (field === 'lastName') {
+      if (!value) newErrors.lastName = 'Last name is required';
       else delete newErrors.lastName;
     }
-
-    if (field === "email") {
-      if (!value || !validateEmail(value))
-        newErrors.email = "Valid email is required";
-      else delete newErrors.email;
+  
+    if (field === 'email') {
+      if (!value) {
+        newErrors.email = 'Email is required';
+      } else if (!validateEmail(value)) {
+        newErrors.email = 'Valid email is required (no uppercase letters allowed)'; // Updated error message
+      } else {
+        delete newErrors.email;
+      }
     }
-
-    if (field === "phone") {
-      if (!value || !validatePhone(value))
-        newErrors.phone = "Valid phone number is required";
+  
+    if (field === 'phone') {
+      if (!value || !validatePhone(value)) newErrors.phone = 'Valid phone number is required';
       else delete newErrors.phone;
     }
-
-    if (field === "address") {
-      if (!value) newErrors.address = "Address is required";
+  
+    if (field === 'address') {
+      if (!value) newErrors.address = 'Address is required';
       else delete newErrors.address;
     }
-
-    if (field === "password") {
-      if (!value) newErrors.password = "Password is required";
+  
+    if (field === 'password') {
+      if (!value) newErrors.password = 'Password is required';
       else delete newErrors.password;
     }
-
-    if (field === "confirmPassword") {
-      if (value !== password)
-        newErrors.confirmPassword = "Passwords do not match";
+  
+    if (field === 'confirmPassword') {
+      if (value !== password) newErrors.confirmPassword = 'Passwords do not match';
       else delete newErrors.confirmPassword;
     }
-
+  
     setErrors(newErrors);
   };
-
+  
   const handleSignup = async () => {
     const newErrors = {};
 
-    if (!firstName) newErrors.firstName = "First name is required";
-    if (!lastName) newErrors.lastName = "Last name is required";
-    if (!email || !validateEmail(email))
-      newErrors.email = "Valid email is required";
-    if (!phone || !validatePhone(phone))
-      newErrors.phone = "Valid phone number is required";
-    if (!address) newErrors.address = "Address is required";
-    if (!password) newErrors.password = "Password is required";
-    if (password !== confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match";
-
+  
+    if (!firstName) newErrors.firstName = 'First name is required';
+    if (!lastName) newErrors.lastName = 'Last name is required';
+    if (!email || !validateEmail(email)) newErrors.email = 'Valid email is required (no uppercase letters allowed)'; // Updated error message
+    if (!phone || !validatePhone(phone)) newErrors.phone = 'Valid phone number is required';
+    if (!address) newErrors.address = 'Address is required'; // Validate address
+    if (!password) newErrors.password = 'Password is required';
+    if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
+  
     // Clear errors if validation passes
     setErrors({});
 
@@ -120,16 +115,14 @@ const SignupForm = () => {
       cusLname: lastName,
       cusMail: email,
       pNum: phone,
-      cusAddr: address,
+      cusAddr: address, 
       cusPassword: password,
+      profilePictureUrl: profilePictureUrl,
     };
 
     try {
       // Send a POST request to the backend using axios
-      const response = await axios.post(
-        "http://192.168.56.1:5000/customer/cusCreate",
-        data
-      );
+      const response = await axios.post(`http://${ip}:5000/customer/cusCreate`, data);
 
       // Handle the response
       if (response.status === 200) {

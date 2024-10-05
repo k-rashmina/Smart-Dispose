@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const garbageBin = require("../../models/kalindu/Garbagebin");
 const trackingDevice = require("../../models/kalindu/TrackingDevice");
+const customerDetails = require("../../models/chamath/customerDetails");
 
 //function for creating garbage bins for new customers
 const createGarbageBin = async (customerID) => {
@@ -36,11 +37,13 @@ const createGarbageBin = async (customerID) => {
   }
 };
 
+//function for getting garbage bins details
 const getCusBinData = async (binDetails) => {
   try {
+    const cusId = await getCusID(binDetails.cusId);
     //getting customer garbage bin data
     const cusBin = await garbageBin.findOne({
-      cusID: binDetails.cusId,
+      cusID: cusId,
       bin_type: binDetails.btype,
     });
 
@@ -84,9 +87,65 @@ const updateBinLevels = async (toBeUpdatedBins) => {
   }
 };
 
+//function for deleting garbage bins
+const deleteGarbageBins = async (customerEmail) => {
+  const cusId = await getCusID(customerEmail);
+
+  try {
+    //deleting 3 garbage bins per customer
+    const deleted = await garbageBin.deleteMany({ cusID: cusId });
+
+    for (let i = 0; i < deleted.length; i++) {
+      const deletedDevices = await trackingDevice.deleteMany({
+        bin_Id: deleted[i]._id,
+      });
+    }
+
+    return "Bins deleted";
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+const getCusID = async (cusEmail) => {
+  try {
+    //getting customer garbage bin data
+    const cusID = await customerDetails.findOne(
+      {
+        cusMail: cusEmail,
+      },
+      "cusID"
+    );
+
+    return cusID;
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+//function for cus id
+const getCusIDForBin = async (binId) => {
+  try {
+    //getting customer id for given garbage bin id
+    const cusId = await garbageBin.findOne(
+      {
+        _id: binId,
+      },
+      "cusID"
+    );
+
+    return cusId.cusID;
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
 module.exports = {
   createGarbageBin,
   getCusBinData,
   monitorBinLevel,
   updateBinLevels,
+  deleteGarbageBins,
+  getCusID,
+  getCusIDForBin,
 };

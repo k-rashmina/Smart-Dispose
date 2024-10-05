@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, Image, TextInput, TouchableOpacity, StyleSheet, Alert, Dimensions, ScrollView, KeyboardAvoidingView, Platform, Modal } from 'react-native';
 import axios from 'axios';
 import { Link, Redirect, useRouter } from 'expo-router';
-import { auth } from '../../../firebaseConfig';
-
-
-
-
-
+import { auth, storage } from '../../../firebaseConfig'; // Import Firebase Storage
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; // Firebase Storage methods
+import * as ImagePicker from 'expo-image-picker'; // Import Expo ImagePicker
+import ip from '../../../ipAddress';
 
 const UserDetails = ({ route, navigation }) => {
   const [user, setUser] = useState({
@@ -18,24 +16,22 @@ const UserDetails = ({ route, navigation }) => {
     cusAddr: '',
     profilePictureUrl: ''
   });
-  
-  const [originalUser, setOriginalUser] = useState(null);  // To keep track of original data
-  const [isEditing, setIsEditing] = useState(false);       // To toggle between view and edit mode
+
+  const [originalUser, setOriginalUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false); // To control the delete confirmation popup
+  const [modalVisible, setModalVisible] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false); // New state for image uploading
   const router = useRouter();
 
   const email = auth.currentUser.email;
 
-
-
-
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
-        const response = await axios.get(`http://192.168.56.1:5000/customer/cusRead/${email}`);
+        const response = await axios.get(`http://${ip}:5000/customer/cusRead/${email}`);
         setUser(response.data);
-        setOriginalUser(response.data); // Save the original data
+        setOriginalUser(response.data);
       } catch (error) {
         console.error('Error fetching user details:', error);
         Alert.alert('Error', 'Failed to load user details.');
@@ -47,37 +43,92 @@ const UserDetails = ({ route, navigation }) => {
     fetchUserDetails();
   }, []);
 
+  // Function to pick and upload image
+  const pickImageAndUpload = async () => {
+    try {
+      const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permissionResult.granted) {
+        Alert.alert('Permission required', 'Permission to access the gallery is required.');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1], // Crop to square aspect ratio
+        quality: 1,
+      });
+
+      if (!result.canceled && result.assets.length > 0) {
+        const imageUri = result.assets[0].uri;
+
+        // Upload the selected image to Firebase Storage
+        const uploadProfilePicture = async () => {
+          setImageUploading(true);
+          const storageRef = ref(storage, `profilePictures/${email}.jpg`); // Storage reference
+
+          try {
+            const response = await fetch(imageUri);
+            const blob = await response.blob();
+
+            // Upload the blob to Firebase
+            await uploadBytes(storageRef, blob);
+            console.log('Image uploaded successfully');
+
+            // Get the download URL from Firebase
+            const downloadURL = await getDownloadURL(storageRef);
+            console.log('Image Download URL:', downloadURL);
+
+            // Update user's profile picture URL in MongoDB
+            const updatedUser = { ...user, profilePictureUrl: downloadURL };
+
+            // Send PUT request to update MongoDB record
+            await axios.put(`http://${ip}:5000/customer/cusUpdate/${email}`, updatedUser);
+            
+            // Update frontend state with the new profile picture URL
+            setUser(updatedUser);
+
+            Alert.alert('Success', 'Profile picture updated successfully.');
+          } catch (error) {
+            console.error('Error uploading profile picture:', error);
+            Alert.alert('Error', 'Failed to upload profile picture.');
+          } finally {
+            setImageUploading(false); 
+          }
+        };
+
+        uploadProfilePicture();
+      } else {
+        Alert.alert('Cancelled', 'No image selected.');
+      }
+    } catch (error) {
+      console.error('Error picking or uploading image:', error);
+      Alert.alert('Error', 'Something went wrong while uploading the image.');
+    }
+  };
 
   const handleSaveChanges = async () => {
     try {
-      // Use user's email instead of _id for the request
-      const response = await axios.put(`http://192.168.56.1:5000/customer/cusUpdate/${email}`, user);
+      // Use user's email for the request
+      const response = await axios.put(`http://${ip}:5000/customer/cusUpdate/${email}`, user);
       
       Alert.alert('Success', 'User details updated successfully.');
-      setIsEditing(false);  // Exit editing mode
+      setIsEditing(false); // Exit editing mode
       setOriginalUser(user); // Save the updated data as the original state
     } catch (error) {
       console.error('Error updating user details:', error);
       Alert.alert('Error', 'Failed to update user details.');
     }
-};
-
-
-  // Function to cancel editing
-  const handleCancel = () => {
-    setUser(originalUser);  // Revert to original user data
-    setIsEditing(false);    // Exit editing mode
   };
 
-  // Function to delete profile
+  const handleCancel = () => {
+    setUser(originalUser); // Revert to original user data
+    setIsEditing(false); // Exit editing mode
+  };
+
   const handleDeleteProfile = async () => {
     try {
-    
-  
-      
-      await axios.delete(`http://192.168.56.1:5000/customer/cusDelete/${email}`);
-  
-      // Show success alert and redirect to login after successful deletion
+      await axios.delete(`http://${ip}:5000/customer/cusDelete/${email}`);
       Alert.alert('Success', 'Profile deleted successfully.', [
         { text: 'OK', onPress: () => router.push('/login') },
       ]);
@@ -86,8 +137,6 @@ const UserDetails = ({ route, navigation }) => {
       Alert.alert('Error', 'Failed to delete profile.');
     }
   };
-  
-  
 
   if (loading) {
     return <Text>Loading...</Text>;
@@ -109,81 +158,81 @@ const UserDetails = ({ route, navigation }) => {
             source={{ uri: user.profilePictureUrl || 'https://via.placeholder.com/150' }} // Placeholder if no profile picture
             style={styles.profilePicture}
           />
+          {/* Button to change the profile picture */}
+          <TouchableOpacity onPress={pickImageAndUpload} style={styles.changePictureButton}>
+            <Text style={styles.buttonText}>
+              {imageUploading ? 'Uploading...' : 'Change Profile Picture'}
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Displaying user details in TextInput fields */}
+        {/* User details */}
         <View style={styles.detailsContainer}>
-  <Text style={styles.label}>First Name</Text>
-  <TextInput
-    style={styles.input}
-    value={user.cusFname}
-    editable={isEditing} // First name is editable
-    onChangeText={(text) => setUser({ ...user, cusFname: text })}
-  />
+          <Text style={styles.label}>First Name</Text>
+          <TextInput
+            style={styles.input}
+            value={user.cusFname}
+            editable={isEditing}
+            onChangeText={(text) => setUser({ ...user, cusFname: text })}
+          />
 
-  <Text style={styles.label}>Last Name</Text>
-  <TextInput
-    style={styles.input}
-    value={user.cusLname}
-    editable={isEditing} // Last name is editable
-    onChangeText={(text) => setUser({ ...user, cusLname: text })}
-  />
+          <Text style={styles.label}>Last Name</Text>
+          <TextInput
+            style={styles.input}
+            value={user.cusLname}
+            editable={isEditing}
+            onChangeText={(text) => setUser({ ...user, cusLname: text })}
+          />
 
-  <Text style={styles.label}>Email Address</Text>
-  <TextInput
-    style={styles.input}
-    value={user.cusMail}
-    editable={false} // Email is not editable
-    onChangeText={(text) => setUser({ ...user, cusMail: text })}
-  />
+          <Text style={styles.label}>Email Address</Text>
+          <TextInput
+            style={styles.input}
+            value={user.cusMail}
+            editable={false}
+          />
 
-  <Text style={styles.label}>Phone Number</Text>
-  <TextInput
-    style={styles.input}
-    value={user.pNum ? user.pNum.toString() : ''}
-    editable={isEditing} // Phone number is editable
-    onChangeText={(text) => setUser({ ...user, pNum: text })}
-  />
+          <Text style={styles.label}>Phone Number</Text>
+          <TextInput
+            style={styles.input}
+            value={user.pNum ? user.pNum.toString() : ''}
+            editable={isEditing}
+            onChangeText={(text) => setUser({ ...user, pNum: text })}
+          />
 
-  <Text style={styles.label}>Address</Text>
-  <TextInput
-    style={styles.input}
-    value={user.cusAddr}
-    editable={isEditing} // Address is editable
-    onChangeText={(text) => setUser({ ...user, cusAddr: text })}
-  />
-</View>
+          <Text style={styles.label}>Address</Text>
+          <TextInput
+            style={styles.input}
+            value={user.cusAddr}
+            editable={isEditing}
+            onChangeText={(text) => setUser({ ...user, cusAddr: text })}
+          />
+        </View>
 
-
+        {/* Edit, Save, Cancel buttons */}
         {isEditing ? (
           <View>
-            {/* Save Changes and Cancel buttons */}
             <TouchableOpacity style={styles.button} onPress={handleSaveChanges}>
               <Text style={styles.buttonText}>Save Changes</Text>
             </TouchableOpacity>
-
             <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={handleCancel}>
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         ) : (
           <View>
-            {/* Edit button when not in editing mode */}
             <TouchableOpacity style={styles.button} onPress={() => setIsEditing(true)}>
               <Text style={styles.buttonText}>Edit Details</Text>
             </TouchableOpacity>
-
-            {/* Delete profile button */}
             <TouchableOpacity
               style={[styles.button, styles.deleteButton]}
-              onPress={() => setModalVisible(true)}  // Show confirmation modal
+              onPress={() => setModalVisible(true)}
             >
               <Text style={styles.buttonText}>Delete Profile</Text>
             </TouchableOpacity>
           </View>
         )}
 
-        {/* Confirmation Modal for deleting profile */}
+        {/* Confirmation Modal */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -199,11 +248,10 @@ const UserDetails = ({ route, navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={[styles.modalButton, styles.cancelButton]}
-                  onPress={() => setModalVisible(false)}  // Close modal
+                  onPress={() => setModalVisible(false)}
                 >
                   <Text style={styles.buttonText}>No</Text>
                 </TouchableOpacity>
-               
               </View>
             </View>
           </View>
@@ -235,80 +283,84 @@ const styles = StyleSheet.create({
   profilePicture: {
     width: 150,
     height: 150,
-    borderRadius: 100,
-    borderWidth: 2,
-    borderColor: '#4CAF50',
+    borderRadius: 75,
+    marginBottom: 10,
+  },
+  changePictureButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 10,
   },
   detailsContainer: {
-    flex: 1,
-    marginBottom: 20,
+    paddingHorizontal: 20,
   },
   label: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    paddingLeft: 15,
   },
   input: {
-    fontSize: 18,
-    borderBottomWidth: 1,
-    borderBottomColor: '#4CAF50',
-    paddingVertical: 8,
+    height: 40,
+    borderColor: '#4CAF50',
+    borderWidth: 1,
+    borderRadius: 5,
     marginBottom: 15,
-    width: Dimensions.get('window').width * 0.9,
-    alignSelf: 'center',
+    paddingHorizontal: 10,
   },
   button: {
     backgroundColor: '#4CAF50',
-    paddingVertical: 10,
-    borderRadius: 8,
+    padding: 15,
+    marginHorizontal: 20,
+    marginTop: 10,
+    borderRadius: 10,
     alignItems: 'center',
-    marginBottom: 20,
-    marginLeft: 20,
-    marginRight: 20,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   cancelButton: {
-    backgroundColor: '#f44336', // Red color for Cancel button
+    backgroundColor: '#FF3B30',
+    marginTop: 20,
+    marginBottom: 20,
   },
   deleteButton: {
-    backgroundColor: '#f44336', // Red color for Delete button
+    backgroundColor: '#FF3B30',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',  // Semi-transparent background
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     backgroundColor: 'white',
-    padding: 20,
     borderRadius: 10,
+    padding: 20,
     alignItems: 'center',
-    width: 300,
   },
   modalText: {
     fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: 'center', // Ensures the text is centered
   },
   modalButtons: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
+    justifyContent: 'center', // Centers the buttons horizontally
+    alignItems: 'center', // Aligns buttons vertically in the center
+    marginTop: 10, // Adds space above the buttons
   },
   modalButton: {
     backgroundColor: '#4CAF50',
-    paddingVertical: 10,
-    borderRadius: 8,
-    width: 100,
-    alignItems: 'center',
+    padding: 10,
+    borderRadius: 10,
+    marginHorizontal: 10, // Space between the buttons
+    minWidth: 80, // Ensures buttons have a minimum width for uniformity
+    alignItems: 'center', // Centers text inside the button
   },
+  
 });
 
 export default UserDetails;

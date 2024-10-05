@@ -1,0 +1,20 @@
+.f-btn {
+    display: block;
+    margin: 20px auto; /* Centers the button horizontally under the h2 */
+    padding: 15px 30px;
+    background-color: #1DB954;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .f-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  }
+  
