@@ -194,6 +194,8 @@ const paymentSummary = () => {
         console.error("Error updating customer points:", error);
       }
     }
+
+    router.push("/pay");
   };
 
   return (
