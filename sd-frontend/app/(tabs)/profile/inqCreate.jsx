@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import BackButton from '../../components/asiri/BackButton';
 import {auth} from '../../../firebaseConfig'
 import UsernameDisplay from '../../utils/asiri/usernameDisplay';
-import { ip } from '../../../ipAddress';
+import  ip  from '../../../ipAddress';
 
 const inqCreate = () => {
   const userName =  UsernameDisplay();

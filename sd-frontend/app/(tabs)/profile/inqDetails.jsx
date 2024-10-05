@@ -12,7 +12,7 @@ import axios from "axios";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import BackButton from "../../components/asiri/BackButton";
 import InqDelete from "./inqDelete";
-import { ip } from "../../../ipAddress";
+import ip from "../../../ipAddress";
 
 const InquiryDetails = () => {
   const route = useRoute(); // Get passed inquiry data

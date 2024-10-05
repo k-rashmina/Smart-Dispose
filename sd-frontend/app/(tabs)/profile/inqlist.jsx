@@ -13,7 +13,7 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Ionicons";
 import Modal from "react-native-modal";
 import { auth } from "../../../firebaseConfig";
-import { ip } from "../../../ipAddress";
+import ip from "../../../ipAddress";
 
 const inqlist = () => {
   const [inquiries, setInquiries] = useState(null);
