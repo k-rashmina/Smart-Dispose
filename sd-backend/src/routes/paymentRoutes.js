@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const paymentController = require("../controllers/yohan/paymentController");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 // router endpoints
@@ -19,5 +20,11 @@ router.post("/intents", async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
+//Save payment
+router.post("/save", paymentController.savePayment);
+
+//Get payment by email
+router.get("/:email", paymentController.getPaymentByEmail);
 
 module.exports = router;

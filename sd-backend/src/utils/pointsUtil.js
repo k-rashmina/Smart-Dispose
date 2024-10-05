@@ -1,14 +1,14 @@
 const CalculatePoints = (points, polytheneProduction) => {
   const pointRanges = [
-    { max: 0.5, points: 20 },
-    { max: 1.0, points: 15 },
-    { max: 1.5, points: 10 },
-    { max: 2.0, points: 5 },
-    { max: 2.5, points: 0 },
+    { max: 1, points: 25 },
+    { max: 2, points: 20 },
+    { max: 3, points: 15 },
+    { max: 4, points: 10 },
+    { max: 5, points: 5 },
   ];
 
-  const incrementStep = 0.5;
-  const decrementPoints = 5;
+  const incrementStep = 1;
+  const decrementPoints = 2;
   let newPoints = 0;
 
   for (let i = 0; i < pointRanges.length; i++) {
@@ -23,8 +23,7 @@ const CalculatePoints = (points, polytheneProduction) => {
     let extraProduction = polytheneProduction - maxRange;
     let decrements = Math.ceil(extraProduction / incrementStep);
 
-    newPoints =
-      pointRanges[pointRanges.length - 1].points - decrements * decrementPoints;
+    newPoints = 0 - decrements * decrementPoints;
   }
 
   points += newPoints;

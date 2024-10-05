@@ -131,6 +131,10 @@ class MonthlyBillService {
       // Step 9: Update user points based on polythene production
       const polytheneProductionWeight = totalWeights["Polythene-plastic"] || 0;
       const currentPoints = await PointsDataAccess.getPointsByEmail(email);
+
+      console.log("Current points:", currentPoints.points);
+      console.log("Polythene production weight:", polytheneProductionWeight);
+
       const updatedPoints = CalculatePoints(
         currentPoints.points,
         polytheneProductionWeight
