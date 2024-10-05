@@ -1,14 +1,17 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Arrow from '../../assets/Arrow5.png';
-import DELogo from '../../assets/logo2.png';
+import Arrow from "../../assets/Arrow5.png";
+import DELogo from "../../assets/logo2.png";
 
 export default function SideBar({ page, menu }) {
   let [url, setUrl] = React.useState(window.location.pathname.toString());
   console.log(url);
 
-  const menuItems = menu.map(item => {
-    const itemUrl = `/admin/${page.toLowerCase()}/${item.toLowerCase().split(' ').join('')}`;
+  const menuItems = menu.map((item) => {
+    const itemUrl = `/admin/${page.toLowerCase()}/${item
+      .toLowerCase()
+      .split(" ")
+      .join("")}`;
     let selectedStyle;
     if (url === itemUrl) {
       // Apply styles for selected item (white background and black font color)
@@ -19,8 +22,15 @@ export default function SideBar({ page, menu }) {
     }
     return (
       <li className="nav-item" key={item}>
-        <Link to={itemUrl} className={selectedStyle} aria-current="page" onClick={() => setUrl(itemUrl)}>
-          <svg className="bi me-2" width="16" height="16"><use xlinkHref="#home"></use></svg>
+        <Link
+          to={itemUrl}
+          className={selectedStyle}
+          aria-current="page"
+          onClick={() => setUrl(itemUrl)}
+        >
+          <svg className="bi me-2" width="16" height="16">
+            <use xlinkHref="#home"></use>
+          </svg>
           {item}
         </Link>
       </li>
@@ -28,24 +38,43 @@ export default function SideBar({ page, menu }) {
   });
 
   return (
-    <div className="d-flex flex-column flex-shrink flex-shrink-0 p-3 text-white" 
-         style={{ width: "300px", minHeight: "100vh", position: 'fixed', backgroundColor: "#1DB954" }}>
-      <Link to="/admin" className="d-flex justify-content-center align-items-center mb-3 mt-3 mb-md-0 me-md-5 text-white text-decoration-none">
-        <img width="100" height="133" style={{ objectFit: 'cover' }} src={DELogo} alt="Company Logo" />
+    <div
+      className="d-flex flex-column flex-shrink flex-shrink-0 p-3 text-white"
+      style={{
+        width: "300px",
+        minHeight: "100vh",
+        position: "fixed",
+        backgroundColor: "#1DB954",
+      }}
+    >
+      <Link
+        to="/admin"
+        className="d-flex justify-content-center align-items-center mb-3 mt-3 mb-md-0 text-white text-decoration-none"
+      >
+        <img
+          width="60"
+          height="60"
+          style={{ objectFit: "cover" }}
+          src={DELogo}
+          alt="Company Logo"
+        />
       </Link>
       <hr />
-      <br />
       <div>
-        <Link to='/admin'>
-          <img className="bi me-5 ms-3" width="20" height="20" src={Arrow} alt="back"></img>
+        <Link to="/admin">
+          <img
+            className="bi me-5 ms-3"
+            width="20"
+            height="20"
+            src={Arrow}
+            alt="back"
+          ></img>
         </Link>
         <span className="fs-2">{page}</span>
       </div>
       <br />
       <br />
-      <ul className="nav nav-pills flex-column mb-auto">
-        {menuItems}
-      </ul>
+      <ul className="nav nav-pills flex-column mb-auto">{menuItems}</ul>
       <hr />
     </div>
   );
