@@ -1,45 +1,37 @@
-// import { StyleSheet, Text, View, Button, BackHandler, Alert } from 'react-native'
-// import React, {useEffect} from 'react'
-// import { Link, useRouter } from 'expo-router'
-// import { logoutUser } from '../../(auth)/Auth';
-
-
-
-
-// const Profile = () => { 
-
-
-//   const router = useRouter();
-
-//   const handleLogout = () => {
-//     logoutUser ().then(() => {
-//       router.push("/login");
-//     });
-
-//   };
-//   return (
-//     <View>
-//       <Text>Profile</Text>
-//       <Link style={{marginTop: 50, alignSelf: 'center', color: 'blue', fontSize: 20}} href={'/profile/inqlist'}>Inquiries</Link>
-//       <Link style={{marginTop: 50, alignSelf: 'center', color: 'blue', fontSize: 20}} href={'/profile/userDetails'}>UserDetails</Link>
-//       <Button title="Logout" onPress={handleLogout} />
-//     </View>
-//   )
-// }
-
-// export default Profile
-
-// const styles = StyleSheet.create({})
-
-
-
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { logoutUser } from '../../(auth)/Auth';
+import axios from 'axios';
+import { auth } from '../../../firebaseConfig';
+import ip from '../../../ipAddress';
 
 const Profile = () => { 
   const router = useRouter();
+  const [user, setUser] = useState({
+    cusFname: '',
+    cusLname: '',
+    profilePictureUrl: '',
+  });
+  const [loading, setLoading] = useState(true);
+
+  const email = auth.currentUser.email;
+
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await axios.get(`http://${ip}:5000/customer/cusRead/${email}`);
+        setUser(response.data);
+      } catch (error) {
+        console.error('Error fetching user details:', error);
+        Alert.alert('Error', 'Failed to load user details.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
 
   const handleLogout = () => {
     logoutUser().then(() => {
@@ -47,9 +39,23 @@ const Profile = () => {
     });
   };
 
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Profile</Text>
+      {/* Displaying user profile picture and name */}
+      {user.profilePictureUrl ? (
+        <Image 
+          source={{ uri: user.profilePictureUrl }} 
+          style={styles.profileImage} 
+        />
+      ) : (
+        <Text>No profile picture available</Text>
+      )}
+      <Text>Welcome,</Text>
+      <Text style={styles.heading}>{user.cusFname} {user.cusLname}</Text>
 
       <TouchableOpacity 
         style={styles.button} 
@@ -75,8 +81,6 @@ const Profile = () => {
   );
 }
 
-export default Profile;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -86,10 +90,17 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   heading: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#4CAF50', // Theme color
-    marginBottom: 40,
+    marginBottom: 20,
+    color: '#333',
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    marginBottom: 20,
+    marginTop: 10,
   },
   button: {
     backgroundColor: '#4CAF50', // Theme color
@@ -97,7 +108,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 50,
     borderRadius: 10,
     marginBottom: 20,
-    width: '80%',
+    width: '90%',
     alignItems: 'center',
   },
   buttonText: {
@@ -110,8 +121,10 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 50,
     borderRadius: 10,
-    marginTop: 20,
-    width: '80%',
+    marginTop: 150,
+    width: '90%',
     alignItems: 'center',
-  }
+  },
 });
+
+export default Profile;
