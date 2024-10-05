@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   GoogleMap,
   LoadScript,
@@ -30,6 +30,12 @@ const Map = ({ data }) => {
     }
   };
 
+  useEffect(() => {
+    if (data) {
+      fetchOptimizedRoute();
+    }
+  }, [data]);
+
   return (
     <LoadScript googleMapsApiKey={"AIzaSyB9jM4BanCgPocT6KcrCcEsuYvE_yfdyYU"}>
       <GoogleMap
@@ -56,7 +62,7 @@ const Map = ({ data }) => {
           />
         )}
       </GoogleMap>
-      <button onClick={fetchOptimizedRoute}>Get Optimized Route</button>
+      {/* <button onClick={fetchOptimizedRoute}>Get Optimized Route</button> */}
     </LoadScript>
   );
 };

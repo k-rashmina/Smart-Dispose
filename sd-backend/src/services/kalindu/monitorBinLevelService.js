@@ -7,7 +7,7 @@ const autoSceduleService = require("./autoSceduleService");
 
 module.exports = function monitorBinLevelService() {
   try {
-    cron.schedule("* */180 * * *", async () => {
+    cron.schedule("* */0.5 * * *", async () => {
       console.log("hi");
       const binMaxCapacity = 360;
       const binThresholdPerc = 80;
