@@ -1,5 +1,6 @@
 const CustomerDetails = require("../../models/chamath/customerDetails");
 const createGarbageBinService = require("../../services/kalindu/createGarbageBinService");
+const pointsService = require("../../services/yohan/pointsService");
 
 const cusCreate = async (req, res) => {
   const newCustomer = new CustomerDetails({
@@ -15,9 +16,11 @@ const cusCreate = async (req, res) => {
   try {
     const savedCustomerDetails = await newCustomer.save();
 
+    // Add new customer to the points collection
+    await pointsService.addPoints(savedCustomerDetails.cusMail, 0);
+
     const msg = await createGarbageBinService(savedCustomerDetails);
     // console.log(msg);
-
     if (msg == "Bins Added") {
       res.json({
         message: "Customer Registered Successfully!",

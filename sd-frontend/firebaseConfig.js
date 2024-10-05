@@ -10,8 +10,14 @@ const firebaseConfig = {
   projectId: "smart-dispose",
   storageBucket: "smart-dispose.appspot.com",  // Firebase Storage bucket
   messagingSenderId: "433816620177",
-  appId: "1:433816620177:web:7ca4600b9b5aed26ce0330"
+  appId: "1:433816620177:web:7ca4600b9b5aed26ce0330",
 };
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
 
 // Initialize Firebase if it hasn't been initialized already
 let app;
